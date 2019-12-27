@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": [
+        "./web/app/*"
+      ],
+      "@pages/*": [
+        "./web/pages/*"
+      ],
+      "@stores/*": [
+        "./web/stores/index.js",
+        "./web/stores/*"
+      ],
+      "@common/*": [
+        "./web/common/*"
+      ],
+      "@components/*": [
+        "./web/common/components/*"
+      ],
+      "@utils/*": [
+        "./web/common/utils/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}
