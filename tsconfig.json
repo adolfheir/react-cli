@@ -1,0 +1,45 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules/**"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@app": [
+        "./src/app"
+      ],
+      "@common": [
+        "./src/common"
+      ],
+      "@components": [
+        "./src/common/components"
+      ],
+      "@pages": [
+        "./src/pages"
+      ],
+      "@styles": [
+        "./src/styles"
+      ],
+      "@stores": [
+        "./src/stores"
+      ],
+    },
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "es2017",
+      "es2018.promise"
+    ],
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+  }
+}

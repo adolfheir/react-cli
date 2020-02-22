@@ -1,7 +1,9 @@
 export const baseUrl = 'http://127.0.0.1:3002/';
 
 const Api = {
-  list: 'list',
+  list: 'trajectorys.json',
+  // 暂时没用到，以后用正则过滤一层才能用
+  detail: '${dirName}/trajectory.json', // eslint-disable-line
 };
 
 // 加base
