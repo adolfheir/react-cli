@@ -27,14 +27,17 @@ const clean = () => {
     });
 };
 
-//start build
+console.log(`\nBuilding proto start ...`);
 
 clean();
 
 const propoList = fs.readdirSync(inputDir);
 
 propoList.forEach((fileName) => {
+    console.log(`\nBuilding ${fileName}`);
     doExec(
         `protoc -I=${inputDir} ${fileName} --js_out=import_style=commonjs:${outputDir} --grpc-web_out=import_style=commonjs,mode=grpcwebtext:${outputDir}`
     );
 });
+
+console.log(`\nBuilding proto end ...`);
