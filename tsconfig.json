@@ -1,6 +1,6 @@
 {
   "include": [
-    "src/**/*"
+    "./src/**/*"
   ],
   "exclude": [
     "node_modules/**"
@@ -8,23 +8,23 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@app": [
-        "./src/app"
+      "@app/*": [
+        "./src/app/*"
       ],
-      "@common": [
-        "./src/common"
+      "@common/*": [
+        "./src/common/*"
       ],
-      "@components": [
-        "./src/common/components"
+      "@components/*": [
+        "./src/common/components/*"
       ],
-      "@pages": [
-        "./src/pages"
+      "@pages/*": [
+        "./src/pages/*"
       ],
-      "@styles": [
-        "./src/styles"
+      "@styles/*": [
+        "./src/styles/*"
       ],
-      "@stores": [
-        "./src/stores"
+      "@stores/*": [
+        "./src/stores/*"
       ],
     },
     "target": "es6",
@@ -35,11 +35,12 @@
       "es2017",
       "es2018.promise"
     ],
+    "typeRoots": ["./node_modules/@types/", "./src/types/"],
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "allowJs": true,                       
     "sourceMap": true,
+    "experimentalDecorators": true,       
+    "emitDecoratorMetadata": true          
   }
 }

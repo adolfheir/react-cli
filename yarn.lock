@@ -883,7 +883,7 @@
 
 "@types/react@*", "@types/react@^16.9.22":
   version "16.9.22"
-  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-16.9.22.tgz?cache=0&sync_timestamp=1582316105640&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact%2Fdownload%2F%40types%2Freact-16.9.22.tgz#f0288c92d94e93c4b43e3f5633edf788b2c040ae"
+  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-16.9.22.tgz#f0288c92d94e93c4b43e3f5633edf788b2c040ae"
   integrity sha1-8CiMktlOk8S0Pj9WM+33iLLAQK4=
   dependencies:
     "@types/prop-types" "*"
@@ -891,7 +891,7 @@
 
 "@typescript-eslint/eslint-plugin@^2.20.0":
   version "2.20.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/eslint-plugin/download/@typescript-eslint/eslint-plugin-2.20.0.tgz?cache=0&sync_timestamp=1582218111151&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Feslint-plugin%2Fdownload%2F%40typescript-eslint%2Feslint-plugin-2.20.0.tgz#a522d0e1e4898f7c9c6a8e1ed3579b60867693fa"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/eslint-plugin/download/@typescript-eslint/eslint-plugin-2.20.0.tgz#a522d0e1e4898f7c9c6a8e1ed3579b60867693fa"
   integrity sha1-pSLQ4eSJj3ycao4e01ebYIZ2k/o=
   dependencies:
     "@typescript-eslint/experimental-utils" "2.20.0"
@@ -911,7 +911,7 @@
 
 "@typescript-eslint/parser@^2.20.0":
   version "2.20.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/parser/download/@typescript-eslint/parser-2.20.0.tgz?cache=0&sync_timestamp=1582218107813&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fparser%2Fdownload%2F%40typescript-eslint%2Fparser-2.20.0.tgz#608e5bb06ba98a415b64ace994c79ab20f9772a9"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/parser/download/@typescript-eslint/parser-2.20.0.tgz?cache=0&sync_timestamp=1582483710300&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fparser%2Fdownload%2F%40typescript-eslint%2Fparser-2.20.0.tgz#608e5bb06ba98a415b64ace994c79ab20f9772a9"
   integrity sha1-YI5bsGupikFbZKzplMeasg+Xcqk=
   dependencies:
     "@types/eslint-visitor-keys" "^1.0.0"

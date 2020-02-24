@@ -11,7 +11,7 @@ import Store from '@ice/store';
 const storeManager = new Store();
 // storeManager.applyMiddleware(middlewares);
 const stores = storeManager.registerStores({
-  home,
+    home,
 });
 
 export default stores;

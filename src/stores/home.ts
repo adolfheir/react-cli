@@ -1,5 +1,3 @@
-
-
 export default {
-  isReady: false,
+    isReady: false,
 };

@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
-  BrowserRouter as Router,
-  // HashRouter as Router,
-  Switch,
-  Route,
+    BrowserRouter as Router,
+    // HashRouter as Router,
+    Switch,
+    Route,
 } from 'react-router-dom';
 
 import routers from './router';
 
-export default function AppRoot() {
-  return (
-    <Router>
-      <Switch>
-        {
-          routers.map(({ page: Page, ...arg }) => {
-            const key = arg.path || '';
-            return (
-              <Route {...arg} key={key}>
-                <Page />
-              </Route>
-            );
-          })
-        }
-      </Switch>
-    </Router>
-  );
-}
+const AppRoot: React.FC = () => {
+    return (
+        <Router>
+            <Switch>
+                {routers.map((option: { page: any; path?: string }) => {
+                    const { page: Page, ...others } = option;
+                    const { path: key = '' } = others;
+                    return (
+                        <Route {...others} key={key}>
+                            <Page />
+                        </Route>
+                    );
+                })}
+            </Switch>
+        </Router>
+    );
+};
+
+export default AppRoot;
