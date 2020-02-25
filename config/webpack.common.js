@@ -1,6 +1,7 @@
 const path = require('path');
 const dartSass = require('sass');
 const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -57,14 +58,17 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({ filename: '[name].css' }),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, '../public/index.html'),
+        }),
         new CopyPlugin([
             {
                 from: path.join(__dirname, '../public/index.html'),
                 to: path.join(__dirname, '../build/index.html'),
             },
             {
-                from: path.join(__dirname, '../public/'),
-                to: path.join(__dirname, '../build'),
+                from: path.join(__dirname, '../public/mapbox'),
+                to: path.join(__dirname, '../build/mapbox'),
             },
         ]),
     ],

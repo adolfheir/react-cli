@@ -6,7 +6,7 @@ export function setLoadingComponent(cmp): void {
     LoadingComponent = cmp;
 }
 
-export function createLoadable(loader): ReactNode {
+export function createLoadable(loader) {
     const LazyComponet = React.lazy(loader);
     return (props) => (
         <React.Suspense fallback={<LoadingComponent />}>
