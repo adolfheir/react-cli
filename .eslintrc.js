@@ -36,6 +36,7 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 0,
         '@typescript-eslint/triple-slash-reference': ['error', { path: 'always', types: 'never', lib: 'never' }],
         // React相关校验规则
+        'react/prop-types':0,
         'react/jsx-indent': [2, 4],
         'react/jsx-no-undef': [2, { allowGlobals: true }],
         'jsx-control-statements/jsx-use-if-tag': 0,

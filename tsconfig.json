@@ -8,6 +8,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "@images/*": [
+        "./public/images/*"
+      ],
       "@app/*": [
         "./src/app/*"
       ],

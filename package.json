@@ -5,7 +5,7 @@
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --config config/webpack.config.dev.js",
     "build": "./node_modules/.bin/webpack --config config/webpack.config.prod.js ",
-    "build_proto":"node ./deploy/build_protoc",
+    "build_proto": "node ./deploy/build_protoc",
     "lint": "./node_modules/.bin/eslint --fix 'src/**/*.*'"
   },
   "author": "",
@@ -42,12 +42,17 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@alifd/next": "^1.19.15",
     "@ice/store": "^1.0.0",
     "@types/react": "^16.9.22",
     "@types/react-dom": "^16.9.5",
+    "classnames": "^2.2.6",
+    "mapbox-gl": "^1.8.0",
+    "moment": "^2.24.0",
     "pre-commit": "^1.2.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-mapbox-gl": "^4.8.2",
     "react-router-dom": "^5.1.2"
   },
   "pre-commit": [

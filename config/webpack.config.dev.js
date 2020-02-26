@@ -21,3 +21,4 @@ module.exports = merge(baseConfig, {
         hot: true,
     },
 });
+

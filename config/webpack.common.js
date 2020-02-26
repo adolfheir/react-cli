@@ -27,6 +27,22 @@ module.exports = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            implementation: dartSass,
+                        },
+                    },
+                ],
+                include: /node_modules/,
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
                         options: {
                             modules: {
                                 localIdentName: '[name]__[local]--[hash:base64:5]',
@@ -75,6 +91,7 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         alias: {
+            '@images': path.join(__dirname, '../public/images'),
             '@app': path.join(__dirname, '../src/app'),
             '@common': path.join(__dirname, '../src/common'),
             '@components': path.join(__dirname, '../src/common/components'),
@@ -83,7 +100,5 @@ module.exports = {
             '@stores': path.join(__dirname, '../src/stores'),
         },
     },
-    externals: {
-        global,
-    },
+    externals: {},
 };

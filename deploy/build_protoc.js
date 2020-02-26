@@ -31,7 +31,7 @@ console.log(`\nBuilding proto start ...`);
 
 clean();
 
-const propoList = fs.readdirSync(inputDir);
+const propoList = fs.readdirSync(inputDir).filter((v) => v.includes('.proto'));
 
 propoList.forEach((fileName) => {
     console.log(`\nBuilding ${fileName}`);
