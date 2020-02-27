@@ -10,7 +10,7 @@
     "@alifd/validate" "^1.1.3"
     prop-types "^15.5.8"
 
-"@alifd/next@^1.19.15":
+"@alifd/next@^1.19.15", "@alifd/next@~1.19.15":
   version "1.19.15"
   resolved "https://registry.npm.taobao.org/@alifd/next/download/@alifd/next-1.19.15.tgz#22f92983600250f5c9a5901950061145a5db28f5"
   integrity sha1-Ivkpg2ACUPXJpZAZUAYRRaXbKPU=
@@ -24,6 +24,13 @@
     react-lifecycles-compat "^3.0.4"
     react-transition-group "^2.2.1"
     shallow-element-equals "^1.0.1"
+
+"@alifd/theme-zhst@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/@alifd/theme-zhst/download/@alifd/theme-zhst-1.0.0.tgz#ce1fe0d053c77d62e90e6d15d24a3192e8ba8817"
+  integrity sha1-zh/g0FPHfWLpDm0V0koxkui6iBc=
+  dependencies:
+    "@alifd/next" "~1.19.15"
 
 "@alifd/validate@^1.1.3":
   version "1.2.0"
@@ -937,17 +944,6 @@
     "@turf/distance" "^5.1.5"
     "@turf/helpers" "^5.1.5"
 
-"@turf/along@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.npm.taobao.org/@turf/along/download/@turf/along-6.0.1.tgz#595cecdc48fc7fcfa83c940a8e3eb24d4c2e04d4"
-  integrity sha1-WVzs3Ej8f8+oPJQKjj6yTUwuBNQ=
-  dependencies:
-    "@turf/bearing" "6.x"
-    "@turf/destination" "6.x"
-    "@turf/distance" "6.x"
-    "@turf/helpers" "6.x"
-    "@turf/invariant" "6.x"
-
 "@turf/area@5.1.x", "@turf/area@^5.1.5":
   version "5.1.5"
   resolved "https://registry.npm.taobao.org/@turf/area/download/@turf/area-5.1.5.tgz#efd899bfd260cdbd1541b2a3c155f8a5d2eefa1d"
@@ -1280,14 +1276,6 @@
   dependencies:
     "@turf/helpers" "^5.1.5"
     "@turf/invariant" "^5.1.5"
-
-"@turf/destination@6.x":
-  version "6.0.1"
-  resolved "https://registry.npm.taobao.org/@turf/destination/download/@turf/destination-6.0.1.tgz#5275887fa96ec463f44864a2c17f0b712361794a"
-  integrity sha1-UnWIf6luxGP0SGSiwX8LcSNheUo=
-  dependencies:
-    "@turf/helpers" "6.x"
-    "@turf/invariant" "6.x"
 
 "@turf/difference@5.1.x":
   version "5.1.5"

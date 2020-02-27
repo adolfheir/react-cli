@@ -6,7 +6,7 @@
     "start": "./node_modules/.bin/webpack-dev-server --config config/webpack.config.dev.js",
     "build": "./node_modules/.bin/webpack --config config/webpack.config.prod.js ",
     "build_proto": "node ./deploy/build_protoc",
-    "lint": "./node_modules/.bin/eslint --fix 'src/**/*.*'"
+    "lint": "./node_modules/.bin/eslint --fix src"
   },
   "author": "",
   "license": "ISC",
@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@alifd/next": "^1.19.15",
+    "@alifd/theme-zhst": "^1.0.0",
     "@ice/store": "^1.0.0",
     "@turf/turf": "^5.1.6",
     "@types/react": "^16.9.22",
