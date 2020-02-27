@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package Filekey;
+
+
+enum SearchObjectType {
+    SEARCHOBJECTTYPE_PEOPLE = 0;
+    SEARCHOBJECTTYPE_CAR = 1;
+    SEARCHOBJECTTYPE_BIKE = 2;
+    SEARCHOBJECTTYPE_ALL = 3;
+}
+
+enum FileType {
+    FILETYPE_OBJECT = 0;
+    FILETYPE_THUMBNAIL = 1;
+    FILETYPE_VIDEO = 2;    
+}
+
+message ObjectFileKey {
+    string task_folder = 1;
+    SearchObjectType search_object_type = 2;
+    string key = 3;
+}
+
+message ObjectRealtimeFileKey {
+    string column_family = 1;
+    string uuid = 2;
+}
+
+message ThumbnailFileKey {
+    string file_path = 1;
+}
+
+message VideoFileKey {
+    string file_path = 1;
+}
+
+message FileKey {
+    FileType type = 1;
+    ObjectFileKey object = 2;
+    ThumbnailFileKey thumbnail = 3;
+    VideoFileKey video = 4;
+    ObjectRealtimeFileKey realtime_object = 5;
+}

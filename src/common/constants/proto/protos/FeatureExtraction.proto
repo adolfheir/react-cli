@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package fe;
+
+enum ProcessingType {
+	PROCESSING_ALL = 0;
+	PROCESSING_REID = 1;
+}
+
+message GetImageFeatureRequest {
+	message ImageInfo {
+		bytes images = 1;
+	}
+	ImageInfo image_info = 1;
+	ProcessingType process_type = 2;
+}
+
+
+message GetImageFeatureResponse {
+    string request_id = 1;
+	Common.Error error = 2;
+	
+	message ImageFeatureInfo{
+		Common.ObjectType object_type = 1;
+		bytes features = 2;
+		Common.Rect2F rect = 3;
+	}
+    repeated ImageFeatureInfo feature_info = 3;
+}
+
+service FeatureExtractionService {
+    // 特征提取服务
+    rpc GetImageFeature(GetImageFeatureRequest) returns (GetImageFeatureResponse) {}  
+}

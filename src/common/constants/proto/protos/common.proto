@@ -1,0 +1,199 @@
+syntax = "proto3";
+
+package Common;
+
+// 错误码，[400-500)为请求参数错误，[500,600)为后台出错错误码
+// 每个接口的注释中，应注明会返回哪些错误码
+
+enum CommonErrCode {
+  UNKNOW_ERROR = 0;
+
+  STATUS_OK = 200;
+
+  PARAMETER_FAILED = 400;  
+  CONTENT_NOT_FOUND = 401;
+  CONTEXT_CONFLICT = 402;
+    
+  INTERNAL_ERROR = 500;
+  TIMEOUT = 504;
+  SERVICE_NONENTITY = 512;
+  SERVICE_NOT_START = 513;
+	
+  FEATURE_EXTRACT_FAILED = 600;
+
+  OUT_THE_LIMITED = 700;
+}
+
+//目标库类型
+enum ObjectGroupType {
+  OBJECTGROUPTYPE_NONE = 0;
+  OBJECTGROUPTYPE_BODY = 1;
+  OBJECTGROUPTYPE_FACE = 2;
+  OBJECTGROUPTYPE_CAR = 3;
+}
+
+//摘要的类型
+enum ObjectType {
+  OBJECTTYPE_PED = 0;
+  OBJECTTYPE_BICYCLE = 1;
+  OBJECTTYPE_CAR = 2;
+  OBJECTTYPE_MOTORBIKE =3;
+  OBJECTTYPE_AEROPLANE = 4;
+  OBJECTTYPE_BUS = 5;
+  OBJECTTYPE_TRAIN = 6;
+  OBJECTTYPE_TRUCK = 7;
+  OBJECTTYPE_ALL = 8;
+  OBJECTTYPE_NONE= 9;
+}
+
+// 性别
+enum Gender {
+  GENDER_NONE = 0;
+  GENDER_MAN = 1;
+  GENDER_WOMAN = 2;
+}
+
+// 目标对象的数据类型
+enum ObjectDataType {
+  OBJECTDATATYPE_IMAGE = 0;
+  OBJECTDATATYPE_VIDEO = 1;
+}
+
+enum ObjectDataStatus {
+  OBJECTDATASTATUS_NORMAL = 0;
+  OBJECTDATASTATUS_ABNORMAL = 1;
+}
+
+enum NodeStatus {
+  NODESTATUS_ONLINE = 0;
+  NODESTATUS_OFFLINE = 1;
+}
+
+enum DataStatus {
+  DATASTATUS_EXIST = 0;
+  DATASTATUS_DELETE = 1;
+}
+
+message Point2F {
+  float x = 1;
+  float y = 2;
+}
+
+message Rect2F {
+  Point2F topleft = 1;
+  float width = 2;
+  float height = 3;
+}
+
+enum SubscribeStatus {
+  SUBSCRIBESTATUS_STOP = 0;
+  SUBSCRIBESTATUS_START = 1;
+}
+
+enum ChangeType {
+  CHANGETYPE_MONITOR = 0;
+  CHANGETYPE_OBJECT = 1;
+  CHANGETYPE_MONITOR_OBJECT = 2;
+}
+
+enum OperationType {
+  OPERATIONTYPE_ADD = 0;
+  OPERATIONTYPE_DELETE = 1;
+  OPERATIONTYPE_UPDATE = 2;
+  OPERATIONTYPE_SELECT = 3;
+}
+
+message ObjectGroupFeature {
+  uint64 object_group_id = 1;
+  repeated ObjectFeature object_feature_list = 2;
+}
+
+message ObjectFeature {
+  uint64 object_id = 1;
+  repeated ObjectDataFeature data_feature_list = 2;
+}
+
+message ObjectFeatureResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+  uint64 monitor_id = 3;
+  uint64 object_id = 4;
+  repeated ObjectDataFeature data_feature_list = 5;
+}
+
+message ObjectDataFeature {
+  uint64 data_id = 1;
+  ObjectGroupType group_type = 2;
+  ObjectDataType data_type = 3;
+  bytes feature = 4;
+}
+
+message GetFeatureRequest {
+  uint64 lib_id = 1;
+  ObjectGroupType type = 2;
+}
+
+message Error {
+  CommonErrCode code = 1;
+  string msg = 2;
+}
+
+message FrameExtendInfo{
+  int32 vms_time_sec = 8; 				//实时预处理的frame在Vms系统里面的绝对时间    
+  int32 vms_offsettime_ms = 9; 		//实时预处理的frame在Vms系统的偏移时间    
+  uint64 frame_sign = 10;   				//帧的签名
+  Rect2F original_img_rect = 14;   		//图像帧原始尺寸
+}
+
+
+// 行人属性
+enum GenderType{
+  GENDERTYPE_ALL = 0;
+  GENDERTYPE_MALE = 1;
+  GENDERTYPE_FEMALE = 2;
+}
+
+enum BehaviorType{
+  BEHAVIORTYPE_ALL = 0;
+  BEHAVIORTYPE_NORMAL = 1;
+  BEHAVIORTYPE_RIDING = 2;  //骑行
+}
+	
+message PedAttrubutes {
+  GenderType gender = 1;
+  BehaviorType behavior = 2;
+}
+
+// 实时预处理的类型
+enum PreProcessType {
+  OFFLINE = 0;
+  HISTORY = 1;
+  REALTIME = 2;
+}
+
+message LatLng {
+  float lat = 1;
+  float lng = 2;
+}
+
+enum PreProcessError {
+  PRE_PROCESS_ERROR_UNKNOW = 0;  // 未知异常
+  PRE_PROCESS_ERROR_RUNNING = 1; // 正常运行
+  PRE_PROCESS_ERROR_TIME_OUT = 2; // 执行超时
+
+  PRE_PROCESS_ERROR_RESOURCE_TASK_OVER_MAX_NUM = 102;          // 超出最大任务限制
+  
+  PRE_PROCESS_ERROR_PLUGIN_LOAD_FAILED = 201;                  // 插件加载失败
+  PRE_PROCESS_ERROR_PLUGIN_PLAY_FAIELD = 202;                  // 创建 播放 失败
+  
+  PRE_PROCESS_ERROR_STORE_FEATURE_SAVE_FAILED = 303;
+  PRE_PROCESS_ERROR_STORTE_IMG_SAVE_FAILED = 304;              // 通过grpc向download保存图像失败
+  
+  PRE_PROCESS_ERROR_GPUBUFFER_READ_ERROR = 401;                // 从buffer读取数据失败，如果触发，说明程序中存在fatal的bug
+  PRE_PROCESS_ERROR_TIMEOUT_NO_YUVSTREAM = 501;                 // 长时间获取不到码流
+
+  // 1000之后的错误是无法自动恢复的错误，不再重试
+  PRE_PROCESS_ERROR_CANT_RECOVER = 1000;
+  PRE_PROCESS_ERROR_CAMERA_DELETED = 1001; // 摄像头被删除
+  PRE_PROCESS_ERROR_RESOURCE_NO_DISK_SPACE = 1002;              // 磁盘空间不足
+}

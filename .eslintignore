@@ -1,1 +1,2 @@
 *.scss
+/src/common/constants/proto 

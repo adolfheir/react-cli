@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package zhst;
+
+
+message CreatePreProcessRequest {
+  string name = 1;                   // 任务名称
+  Common.PreProcessType type = 2;    // 任务类型
+  string video_file_key = 3;         // 离线视频文件ID
+  uint64 camera_id = 4;              // 摄像头id
+  uint32 begin_time = 5;             // 类型为HISTORY时的起始时间, 单位是秒
+  uint32 end_time = 6;               // 类型为HISTORY时的起始时间，单位是秒
+}
+
+message CreatePreProcessResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+  PreProcessInfo info = 3; // 创建的预处理
+}
+
+enum PreProcessStatus {
+  PRE_PROCESS_UNKNOW_STATUS = 0; // 未知状态
+  PRE_PROCESS_UN_SCHEDULE = 1; // 未调度，一般是没有资源了，或者是刚添加
+  PRE_PROCESS_RUNNING = 2; // 正常运行
+  PRE_PROCESS_SCHEDULED = 3; // 已调度，开始运行，但可能还没有启动成功
+  PRE_PROCESS_RETRYING = 4; // 出错，重试中
+  PRE_PROCESS_ERROR = 5; // 内部出错
+  PRE_PROCESS_STOP = 6;  // 已经停止，客户端调用的stop接口
+  PRE_PROCESS_FINISH = 7;// 非实时预处理，处理完成
+}
+
+message PreProcessInfo {
+  uint64 id = 1;                     // 任务ID
+  string name = 2;                   // 任务名称
+  Common.PreProcessType type = 3;    // 任务类型
+  uint64 video_id = 4;               // 离线视频id
+  uint64 camera_id = 5;              // 摄像头id
+  int32 begin_time = 6;              // 类型为HISTORY时的起始时间, 单位是秒
+  int32 end_time = 7;                // 类型为HISTORY时的结束时间，单位是秒
+  float progress = 8;                // 预处理的进度，非实时有效，值应该是0-1
+  PreProcessStatus status = 9;       // 预处理状态，具体值见PreProcessStatus，状态机流转：https://www.processon.com/view/link/5e1d84dbe4b08090aaf44dc1
+  uint32 error = 10;                 // 错误码，见common.PreProcessError 
+}
+
+message ListPreProcessRequest {
+  repeated uint64 camera_ids = 1; // 按摄像头id来过滤
+  repeated uint64 video_ids = 2; // 按视频id来过滤，video_ids和camera_ids二选一
+  Common.PreProcessType type = 3; // 按类型来过滤
+  uint32 max_results = 4;
+  string next_token = 5;
+}
+
+message ListPreProcessResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+  repeated PreProcessInfo pre_process_infos = 3; // 预处理数据列表
+  string next_token = 4;
+}
+
+message DeletePreProcessRequest {
+  uint64 id = 1; // 待查询的预处理id
+}
+
+message DeletePreProcessResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+}
+
+message StopPreProcessRequest {
+  uint64 id = 1; // 待删除的预处理id
+}
+
+message StopPreProcessResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+}
+
+message StartPreProcessRequest {
+  uint64 id = 1; // 待启动的预处理id
+}
+
+message StartPreProcessResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+}
+
+message PreProcessStatusRequest {
+  repeated uint64 ids = 1; // 待监听的预处理id列表，如果传空则监听所有预处理
+}
+
+message PreProcessStatusResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+  repeated PreProcessInfo pre_process_infos = 3; // 预处理数据列表, 目前只填充： id, progress, status, error这四个字段
+}
+
+// 预处理任务管理服务
+service PreProcessManagerService {
+  // 创建预处理任务
+  rpc CreatePreProcess(CreatePreProcessRequest) returns (CreatePreProcessResponse){
+
+  }
+
+  // 查询预处理任务
+  rpc ListPreProcess(ListPreProcessRequest) returns (ListPreProcessResponse){
+
+  }
+
+  // 删除预处理任务
+  rpc DeletePreProcess(DeletePreProcessRequest) returns (DeletePreProcessResponse){
+
+  }
+  
+  // 停止预处理任务
+  rpc StopPreProcess(StopPreProcessRequest) returns (StopPreProcessResponse){
+
+  }
+    
+  // 启动预处理任务
+  rpc StartPreProcess(StartPreProcessRequest) returns (StartPreProcessResponse){
+
+  }
+
+  // 监听任务状态变化
+  rpc SubscribePreProcessStatus(PreProcessStatusRequest) returns (stream PreProcessStatusResponse){
+
+  }
+
+ }

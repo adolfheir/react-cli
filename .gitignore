@@ -126,4 +126,4 @@ lib
 umd
 es
 build
-
+public/proto/*

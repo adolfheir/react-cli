@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package zhst;
+
+enum ImgServiceErrCode {
+    IMG_ERRORCODE_SUCCESS = 0;
+    IMG_ERRORCODE_FAILED = 1;
+}
+
+enum ImgServiceRequestType{
+    PUT_REQUEST = 0;
+    GET_REQUEST = 1;
+    DELETE_COLUMN_FAMILY_REQUEST = 2;
+    DELETE_TASK_REQUEST = 3;
+}
+
+message ImgServiceMsg{
+    ImgServiceRequestType type = 1;
+    ImgServiceErrCode error_code = 2;
+    string taskid = 3;
+    string column_family_name = 4;
+    string uuid = 5;
+    bytes img_data = 6;
+    string daytime = 7;
+}
+
+service PreprocessTask {
+    rpc CallRocksDbServer(ImgServiceMsg) returns (ImgServiceMsg) {}
+}

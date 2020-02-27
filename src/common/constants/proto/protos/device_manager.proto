@@ -1,0 +1,167 @@
+syntax = "proto3";
+
+import public "common.proto";
+
+package zhst;
+
+// 插件 支持的 平台的信息
+message VmsPlatformInfo{
+    int32 id = 1;
+    string platform_name = 2;        // 平台名称
+    string plugin_name = 3;          // 插件名称
+    string ip = 4;                   // 服务器地址
+    int32 port = 5;
+    string user_name = 6;
+    string password = 7;
+}
+
+// 1.返回的摄像头信息
+message Camera{
+    int32 id = 1;                       // 摄像头id
+    string uuid = 2;                    // 未使用
+    string name = 3;                    // 摄像头名字，可以修改
+    int32 type = 4;                     // 未使用
+    string details = 5;                 // 未使用
+    string vms_dir_id = 6;              // 摄像头所属的目录id
+    int32 device_vender = 7;            // 未使用
+    int32 vms_paltform_id = 8;          // 插件id,和后面的platform_info 有冗余
+    string vms_channel = 9;             // 摄像头通道号
+    int32 vms_camera_status = 10;       // 未使用
+    string vms_camera_decoder_tag = 11; // 未使用
+    double longitude = 12;              // 摄像头位置信息，可以修改
+    double latitude = 13;               // 
+    VmsPlatformInfo platform_info = 14; // 摄像头所属的插件的信息
+    string extend_info = 15;            // 扩展信息，保存点位等信息,可以修改
+    string rtsp_address = 16;           // rtsp 播放地址，可以修改
+}
+
+// dir的信息是 插件 里 传出来的
+message Vmsdir{
+    string string_id = 1;               // 目录id
+    int32 vms_paltform_id = 2;              // 插件信息
+    string name = 3;                    // 目录的名字
+    string parent_stringid = 4;         // 所属上级目录的id
+}
+
+// 1.查询所有的摄像头信息和子级dir信息
+message ListCameraAndDirRequest{
+    int32 vms_paltform_id = 1;                    // 插件id
+    string vmsdir_id = 2;                // 目录id
+}
+
+message ListCameraAndDirResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated Camera cameras = 3;          // 下一级所有摄像头的信息
+    repeated Vmsdir vmsdirs = 4;          // 下一级所有目录的信息
+}
+
+// 2.修改摄像头信息
+message EditCameraInfoRequest{
+    Camera camera = 1;                    // 摄像头信息，目前支持修改 name, longitude, latitude, extend_info, rtsp_address
+}
+
+message EditCameraInfoResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+}
+
+// 3. 查询摄像头。当cameraid被设置，就通过id查找。否则通过名字查找
+message SearchCameraRequest{
+    int32 camera_id = 1;                       // 摄像头id
+    string camera_name_key = 2;                // 摄像头名字，支持模糊查询
+    int32 start = 3;
+    int32 count = 4; 
+    int32 status = 5;                          // 摄像头状态，目前不支持
+}
+
+message SearchCameraResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated Camera cameras = 3;
+}
+
+// 4. 查询这个摄像头所在的级联路径
+message SearchCameraPathRequest{
+    int32 camera_id = 1;                      // 摄像头id
+    int32 expand_dir = 2;                    // 如果expand_dir被设置,则 附带返回 同级的 其它 摄像头 和 目录信息
+}
+
+message VmsdirNode{
+    Vmsdir vms_dir = 1;
+    int32 sub_vms_dir_id = 2;
+    repeated Camera cameras = 3; // 只有最后一级可能有值
+    repeated Vmsdir vmsdirs = 4; // 只有最后一级可能有值
+}
+
+message SearchCameraPathResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated VmsdirNode vmsdir_nodes = 3;
+}
+
+// 5.查询所有的vms
+message ListVmsPlatformRequest{
+    int32 max_results = 1;           // 每一页最大数量
+    string next_token = 2;
+}
+
+message ListVmsPlatformResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated VmsPlatformInfo paltforms = 3;
+    uint64 total_count = 4;
+    string next_token = 5;
+}
+
+// 6.创建一个新的vms
+message CreateVmsRequest{
+    VmsPlatformInfo vms_info = 1;
+}
+
+message CreateVmsResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+}
+
+// 7.删除一个vms
+message DeleteVmsRequest{
+    int32 vms_paltform_id = 1;
+}
+
+message DeteleVmsResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+}
+
+service DeviceService {
+
+    // 1.通过vmsid和dirid 查询子级camera 和 子级dir
+    rpc ListCameraAndDir(ListCameraAndDirRequest) returns (ListCameraAndDirResponse){
+    }
+
+    // 2.修改摄像头信息
+    rpc EditCamera(EditCameraInfoRequest) returns (EditCameraInfoResponse){
+    }
+
+    // 3.查询摄像头信息
+    rpc SearchCamera(SearchCameraRequest) returns (SearchCameraResponse){
+    }
+
+    // 4.查询这个摄像头所在的级联路径
+    rpc SearchCameraPath(SearchCameraPathRequest) returns (SearchCameraPathResponse){
+    }
+
+    // 5.查询所有的vms
+    rpc ListVmsPlatform(ListVmsPlatformRequest) returns (ListVmsPlatformResponse){
+    }
+
+    // 6.创建一个新的vms
+    rpc CreateVms(CreateVmsRequest) returns (CreateVmsResponse){
+    }
+
+    // 7.删除一个vms
+    rpc DeleteVms(DeleteVmsRequest) returns (DeteleVmsResponse){
+    }
+}
+

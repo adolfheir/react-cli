@@ -35,8 +35,8 @@ export default class Map extends Component {
             <Map
                 style={isDev ? webMapStyle : localMapStyle}
                 // center={[120.0816032474, 30.1300123643]}
-                center={[-96, 37.8]}
-                zoom={[3]}
+                center={[120.5999984741211, 30]}
+                zoom={[12]}
                 containerStyle={{
                     height: '100vh',
                     width: 'calc(100vw - 200px)',

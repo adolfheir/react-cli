@@ -1,0 +1,231 @@
+//2019-12-04
+syntax = "proto3";
+
+package SipServer;
+//获取摄像头列表
+message GetCameraListRequest{
+	string catalog_id = 1; 		//sipserver下级设备id
+	string catalog_ip = 2;		//sipserver下级设备ip
+	string catalog_port = 3;
+}
+
+message DeviceItem {
+	string deive_id = 1;		//摄像头ID，也作为channel
+	string name = 2;			//摄像头名字
+	string ip_address = 3;		//摄像头ip
+	string port = 4;			//摄像头端口
+	double longitude = 5;		//经度
+	double latitude = 6;		//纬度
+	string status = 7;			//摄像头状态
+	string parent_id = 8;		//sipserver下级设备id
+	string manufacturer = 9; //厂商
+	string model = 10;
+	string password = 11;
+	int32 parental = 12;
+}
+
+message GetCameraListResponse{
+	int64 nRet = 1;
+	repeated DeviceItem devicelist = 2; 
+}
+//开始下载
+message StartDownloadRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+	int64 start_time = 5;
+	int64 end_time = 6;
+}
+message StartDownloadResponse{
+	int64 nRet = 1;
+}
+//停止下载
+message StopDownloadRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message StopDownloadResponse{
+	int64 nRet = 1;
+}
+//暂停下载
+message PauseDownloadRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message PauseDownloadResponse{
+	int64 nRet = 1;
+}
+//继续下载
+message ResumeDownloadRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message ResumeDownloadResponse{
+	int64 nRet = 1;
+}
+
+enum Status{
+  WAITING_STATUS = 0;
+  START_STATUS = 1;  
+  PROCEEDING_STATUS = 2;
+  PAUSE_STATUS = 3;
+  SUCCESSS_STATUS = 4;
+  FAILED_STATUS = 5;
+}
+
+//获取下载进度
+message GetStatusRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message GetStatusResponse{
+	int64 nRet = 1;
+	int64 filesize = 2;//下载文件大小
+	Status status = 3;//下载状态
+}
+
+//------------------------------------
+//开始播放历史视频
+message PlayHistoryVideoRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+	int64 start_time = 5;
+	int64 end_time = 6;
+}
+
+message PlayHistoryVideoResponse{
+	int64 nRet = 1;
+}
+
+
+//开始播放实时视频
+message PlayRealVideoRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message PlayRealVideoResponse{
+	int64 nRet = 1;
+}
+
+
+//停止播放
+message StopPlayRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message StopPlayResponse{
+	int64 nRet = 1;
+}
+//暂停播放
+message PausePlayRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message PausePlayResponse{
+	int64 nRet = 1;
+}
+//继续播放
+message ResumePlayRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+}
+message ResumePlayResponse{
+	int64 nRet = 1;
+}
+//播放进度跳转
+message SetPlayPosRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+	int64 playPos = 5;		//playPos为绝对时间
+}
+message SetPlayPosResponse{
+	int64 nRet = 1;
+}
+
+//设置播放速度
+message SetPlaySpeedRequest{
+	string catalog_id = 1;		//sipserver下级设备id
+	string device_id = 2;		//摄像头id
+	string recv_ip = 3;			//媒体流接收者的ip
+	string recv_port = 4;		//媒体流接收者port
+	float scale = 8;
+}
+message SetPlaySpeedResponse{
+	int64 nRet = 1;
+}
+
+service sipService{
+	//获取摄像头列表
+	rpc GetCameraList(GetCameraListRequest) returns (GetCameraListResponse){
+	}
+	
+	//开始下载
+	rpc StartDownload(StartDownloadRequest) returns (StartDownloadResponse){
+	}
+	
+	//停止下载
+	rpc StopDownload(StopDownloadRequest) returns (StopDownloadResponse){
+	}
+	
+	//暂停下载
+	rpc PauseDownload(PauseDownloadRequest) returns (PauseDownloadResponse){
+	}
+	
+	//继续下载
+	rpc ResumeDownload(ResumeDownloadRequest) returns (ResumeDownloadResponse){
+	}
+	
+	//获取下载文件大小,状态
+	rpc GetStatus(GetStatusRequest) returns (GetStatusResponse){
+	}
+	
+	
+	//开始播放历史视频
+	rpc StartHisPlay(PlayHistoryVideoRequest) returns (PlayHistoryVideoResponse){
+	}
+	
+	//开始播放实时视频
+	rpc StartRealPlay(PlayRealVideoRequest) returns (PlayRealVideoResponse){
+	}
+	
+	//停止播放
+	rpc StopPlay(StopPlayRequest) returns (StopPlayResponse){
+	}
+	
+	//暂停播放
+	rpc PausePlay(PausePlayRequest) returns (PausePlayResponse){
+	}
+	
+	//继续播放
+	rpc ResumePlay(ResumePlayRequest) returns (ResumePlayResponse){
+	}
+	
+	//播放跳转
+	rpc SetPlayPos(SetPlayPosRequest) returns (SetPlayPosResponse){
+	}
+	
+	//设置播放速度
+	rpc SetPlaySpeed(SetPlaySpeedRequest) returns (SetPlaySpeedResponse){
+	}
+}

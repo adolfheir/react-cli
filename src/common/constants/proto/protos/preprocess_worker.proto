@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+import "common.proto";
+import "device_manager.proto";
+
+package zhst;
+
+// 节点状态
+enum PreProcessNodeStatus {
+  RUNNING = 0;
+  OD_INIT_FAILED = 1;                           // od初始化失败，检查model
+  TINY_REID_INIT_FAILED = 2;                    // tiny reid初始化失败，检查相应的文件 FeaExtract.onnx 是否正确
+  REID_INIT_FAILED = 3;                         // reid初始化失败，检查model是否正确
+  NSQ_CONNECT_FAILED = 4;                     // nsq连不上
+  IMAGE_SERVER_CONNECT_FAILED = 5;              // 远端的download连不上,检查download的gprc服务是否开启
+  NO_POD_IP = 6;                                // 无法从环境变量中获取 POD_IP
+  READ_CONFIG_FAILED = 7;                       // 配置文件或某几项缺失
+  GPU_GET_FAILED = 8;                          // gpu获取失败,检查该节点的显卡和配置文件中的gpuid是否一致
+  NO_DISK_SPACE = 9;                             // 磁盘空间不足
+}
+
+// 预处理任务信息
+message PreProcessStatusInfo {
+  uint64 id = 1; // 预处理id
+  Common.PreProcessError task_status = 2; // 预处理状态，具体值待定义
+  float progress = 3; // 预处理的进度，非实时有效，值应该是0-1
+  string thumbnail_filekey = 4; // 封面路径
+  string feature_store_path = 5; // 特征存储路径
+}
+
+// 预处理worker的状态，走消息队列来上报，topic为PreProcessNodeHeartBeat
+// 此消息的目的：
+// 1. 上报节点的健康情况，5秒上报一次
+// 2. 上报节点的可用情况，立即上报
+// 3. 上报任务的健康情况（包括进度）, 5秒上报一次
+// 4. 上报任务的异常或者结束情况，立即上报
+
+message PreProcessNodeHeartBeat {
+  string address = 1; // 节点的pod的地址
+  int64 time = 2; // 消息产生的时间，精确到毫秒
+  uint64 seq = 3; // 消息的序号，递增+1
+  uint32 free = 4; // 节点是否空闲
+  PreProcessNodeStatus status = 5; // 节点状态
+  repeated PreProcessStatusInfo pre_process_statuses = 6; // 当前节点的预处理任务信息
+}
+
+message OfflineTaskParamas{
+  string inputFile = 1; // 输入路径，非实时有效
+  Common.Rect2F rect = 2; // 非实时有效
+  string modelType = 3;
+  string outputFile = 4; // 输出路径
+}
+
+message OnlineTaskParamas{
+  zhst.Camera camera = 1;
+  string outputFile = 2;
+}
+
+message HistoryTaskParamas{
+  zhst.Camera camera = 1;
+  string outputFile = 2;
+  uint32 begin_time = 5;             // 类型为HISTORY时的起始时间, 单位是秒
+  uint32 end_time = 6;               // 类型为HISTORY时的起始时间，单位是秒
+}
+
+message StartTaskRequest {
+  uint64 task_id = 1; // 待删除的预处理id
+  OfflineTaskParamas offlineParamas = 2;  // 非实时任务，现在videoIo没有被包装成插件,无法统一; 2019-11-26
+  OnlineTaskParamas onlineParamas = 3;  // 实时任务
+  HistoryTaskParamas historyParamas = 4;  // 实时任务
+  Common.PreProcessType type = 5;    // 任务类型
+}
+
+message StartTaskResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+message StopTaskRequest {
+  uint64 task_id = 1; // 待删除的预处理id
+}
+
+message StopTaskResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+message RealtimeRectInfo {
+    Common.Rect2F src_rect = 1;           //原始框
+    Common.Rect2F extend_rect = 2;        //扩展框
+    bytes feature = 3;             //特征
+    string path_id = 4;            //所属的pathid
+    Common.ObjectType type = 5;           //目标类型
+    float confidence = 6;          //自信度
+    string img_uuid = 7;           //扩展图的uuid
+    int32 obj_num = 8;             //一个path的第几个目标
+    uint64 frame_timestamp = 9;    //时间戳
+    string column_family_name = 10;
+    //实时预处理的frame在Vms系统里面的绝对时间
+    int32 frame_vms_time = 11;
+    //实时预处理的frame在Vms系统的偏移时间
+    int32 frame_vms_offsettime = 12;
+    Common.Rect2F original_img_rect = 14;  //原始大图
+    int64 feature_id = 15;
+    int32 isFirstOfPath = 16;       // 是一个摘要的第一帧
+    // 帧的签名
+    uint64 frame_sign = 23;  
+    string s3_key = 24;  
+
+}
+
+message PathFrameInfo{
+    uint64 frame_id = 1;
+    uint64 frame_timestamp = 2;
+    repeated RealtimeRectInfo realtimePaths = 3;
+    repeated string endPathId = 4;
+	  string taskId = 5;
+}
+
+service PreProcessWorkerService {
+  // 启动任务
+  rpc StartTask(StartTaskRequest) returns (StartTaskResponse){
+  }
+
+   // 停止任务
+  rpc StopTask(StopTaskRequest) returns (StopTaskResponse){
+  }
+}

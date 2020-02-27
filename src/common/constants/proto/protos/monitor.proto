@@ -1,0 +1,346 @@
+syntax = "proto3";
+
+import "ObjectGroup.proto";
+
+package Monitor;
+
+
+enum MonitorStatus{
+  START_STATUS = 0;
+  WAITING_STATUS = 1;
+  STOP_STATUS = 2;
+  FAILED_STATUS = 3;
+}
+
+enum MonitorResultStatus {
+  RESULT_STATUS_UNKNOWN = 0; // 未知
+  RESULT_STATUS_PENDING = 1; // 待处理
+  RESULT_STATUS_ACCEPT = 2;  // 认可为结果
+  RESULT_STATUS_REJECT = 3;  // 不认可结果
+}
+
+message Monitor {
+  uint64 monitor_id = 1; // 后端设置值
+  string monitor_name = 2; 
+  string monitor_detail = 3;
+  uint64 timestamps = 4;  // 后端设置值
+  repeated MonitorCamera camera_list = 5;
+  uint64 object_id = 6;
+  uint64 object_group_id = 7;
+  float threshold = 8;
+  MonitorStatus status = 9;
+  uint64 start_time = 10;
+  uint64 end_time = 11;
+  int32 time_restrict = 12;  // 时间限制
+  Common.ObjectGroupType object_type = 13; // 目标类型
+  Common.ObjectDataStatus object_status = 14;
+}
+
+
+// 布控结果
+message MonitorResult{
+  uint64 id = 1;
+  uint64 monitor_id = 2;                // 在哪一个布控中找到目标
+  uint64 camera_id = 3;                 // 原始目标所在摄像头的id
+  string path_id = 4;                   // 原始目标的id
+  uint64 path_frame_timestamp = 5;      // 原始目标时间戳
+  Common.Rect2F path_image_rect = 6;    // 原始目标的框
+  Common.Rect2F path_image_extend_rect = 7;
+  float confidence = 8;                 // 原始目标置信度
+  string path_image_key = 9;            // 图片的key
+
+  uint64 match_object_group_id = 10;    // 匹配目标库id
+  uint64 match_object_id = 11;          // 匹配目标id
+  uint64 match_object_data_id = 12;     // 匹配目标index
+
+  float score = 13;                     // 原始目标和匹配目标的相似度得分
+  int32 create_time = 14;                
+
+  bytes features = 15;                  // 有些结果可能需要匹配到的摘要的feature 
+  uint64 feature_id = 16;
+  MonitorResultStatus status = 17;      // 布控结果的处理状态
+
+  Common.FrameExtendInfo frame_extend_info = 100; //帧扩展信息
+  Common.ObjectType object_type = 101;
+}
+
+message CameraStatistics{
+  uint64 camera_id = 1;
+  repeated uint64 count = 2;  //固定24个，不足补0
+  uint64 total_count = 3;
+}
+
+message MonitorCamera {
+  uint64 camera_id = 1;
+  uint64 task_id = 2;
+  uint32 status = 3;
+}
+
+message ChangeNotification {
+  Common.ChangeType change_type = 1;
+  Common.OperationType operation_type = 2;
+  Monitor monitor = 3;
+  ObjectGroup.Object object = 4;
+}
+// 1.请求：新建布控
+message CreateMonitorRequest{
+  Monitor monitor = 1;
+}
+
+// 1.返回：新建布控
+message CreateMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  Monitor monitor = 3;
+}
+
+// 2.请求：修改布控
+message ModifyMonitorRequest{
+  Monitor monitor = 1;
+}
+
+// 2.返回：修改布控
+message ModifyMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+// 3.请求：删除布控
+message DeleteMonitorRequest{
+  repeated uint64 monitor_id = 1;
+}
+
+// 3.返回：删除布控
+message DeleteMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+// 4.请求：查询布控
+message DescribeMonitorRequest{
+  uint64 monitor_id = 1;
+}
+
+// 4.返回：查询布控
+message DescribeMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  Monitor monitor = 3;
+}
+
+// 5.请求：查询布控列表
+message ListMonitorsRequest{
+  uint32 max_results = 1;
+  string next_token = 2;
+}
+
+// 5.返回：查询布控列表
+message ListMonitorsResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated Monitor monitor_list = 3;
+  uint64 total_count = 4;
+  string next_token = 5;
+}
+
+// 6.请求：开启布控
+message StartMonitorRequest{
+  uint64 monitor_id = 1;
+}
+
+// 6.返回：开启布控
+message StartMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+// 7.请求：停止布控
+message StopMonitorRequest{
+  uint64 monitor_id = 1;
+}
+
+// 7.返回：停止布控
+message StopMonitorResponse{
+  string request_id = 1;
+  Common.Error error = 2;  
+}
+
+// 8.请求：统计数据
+message GetCameraStatisticsRequest{
+  repeated uint64 camera_ids = 1;
+}
+
+// 8.返回：统计数据
+message GetCameraStatisticsResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated CameraStatistics results = 3;
+}
+
+// 9.请求：布控结果订阅
+message SubscribeMonitorResultsRequest{
+  uint64 monitor_id = 1;
+}
+
+// 9.返回：布控结果订阅
+message SubscribeMonitorResultsResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated MonitorResult result_items = 3;
+}
+
+// 10.请求：布控结果查询
+message ListMonitorResultsRequest{
+  uint64 monitor_id = 1;
+  uint32 max_results = 2;
+  string next_token = 3;
+  MonitorResultStatus status = 4; // 布控结果状态
+}
+
+// 10.返回：布控结果查询
+message ListMonitorResultsResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated MonitorResult monitor_results = 3;
+  uint64 total_count = 4;
+  uint64 today_count = 5;
+  string next_token = 6;
+}
+
+message MonitorResultTotal{
+  uint64 monitor_id = 1;
+  uint64 total_count = 2;
+  uint64 today_count = 3;
+}
+
+// 11.批量获取 布控结果
+message GetResultCountRequest{
+  repeated uint64 monitor_ids = 1;
+}
+
+// 11 批量获取布控
+message GetResultCountResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated MonitorResultTotal monitor_result_totals = 3;
+}
+
+message CameraSuspectCount{
+  uint64 camera_id = 1;
+  uint64 count = 2;
+}
+
+// 12.获取monitor id, camera id 对应的嫌疑人 数量 
+message GetCameraResultCountAllRequest{
+  uint64 monitor_id = 1;
+}
+
+// 12.返回monitor id, camera id 对应的嫌疑人 数量 
+message GetCameraResultCountAllResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated CameraSuspectCount result = 3;
+}
+
+// 13.请求：通过摄像头查询布控
+message ListMonitorsByCameraRequest {
+  uint64 camera_id = 1;
+  uint32 max_results = 2;
+  string next_token = 3;
+}
+
+// 13.返回：通过摄像头查询布控
+message ListMonitorsByCameraResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated Monitor monitor_list = 3;
+  uint64 total_count = 4;
+  string next_token = 5;
+}
+
+message SubscribeMonitorObjectChangeRequest {
+  Common.SubscribeStatus subscribe_status = 1;
+}
+
+message SubscribeMonitorObjectChangeResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated ChangeNotification changeNotificationList = 3;
+}
+
+// 处理布控结果请求
+message ProcessMonitorResultRequest{
+  uint64 monitor_id = 1;                       // 布控ID
+  string object_id = 2;                        // 摘要ID
+  MonitorResultStatus status = 3;              // 结果状态
+}
+
+// 处理布控结果应答
+message ProcessMonitorResultResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+service MonitorService {
+  // 新建布控
+  rpc CreateMonitor(CreateMonitorRequest) returns (CreateMonitorResponse){
+  }
+
+  // 删除布控
+  rpc DeleteMonitor(DeleteMonitorRequest) returns (DeleteMonitorResponse){
+  }
+
+  // 修改布控
+  rpc ModifyMonitor(ModifyMonitorRequest) returns (ModifyMonitorResponse){
+  }
+
+  // 查询布控
+  rpc DescribeMonitor(DescribeMonitorRequest) returns (DescribeMonitorResponse){
+  }
+
+  // 查询布控列表
+  rpc ListMonitors(ListMonitorsRequest) returns (ListMonitorsResponse){
+  }
+  
+  // 开启布控
+  rpc StartMonitor(StartMonitorRequest) returns (StartMonitorResponse){
+  }
+  
+  // 停止布控
+  rpc StopMonitor(StopMonitorRequest) returns (StopMonitorResponse){
+  }
+  
+  // 布控结果查询
+  rpc ListMonitorResults(ListMonitorResultsRequest) returns (ListMonitorResultsResponse){
+  }
+
+  // 布控结果订阅 
+  rpc SubscribeMonitorResults(SubscribeMonitorResultsRequest) returns (stream SubscribeMonitorResultsResponse){
+  }
+
+  // 布控任务抓怕统计数据
+  rpc GetCameraStatistics(GetCameraStatisticsRequest) returns (GetCameraStatisticsResponse){
+  }
+
+  // 批量获取布控结果
+  rpc GetResultCount(GetResultCountRequest) returns (GetResultCountResponse){
+  }
+  
+  // 按照摄像头获取布控列表
+  rpc ListMonitorsByCamera(ListMonitorsByCameraRequest) returns (ListMonitorsByCameraResponse){
+  }
+
+  // 获取一个布控下
+  rpc GetCameraResultCount(GetCameraResultCountAllRequest) returns (GetCameraResultCountAllResponse){
+  }
+  
+  // 布控和单目标状态更新订阅
+  rpc SubscribeMonitorObjectChange(SubscribeMonitorObjectChangeRequest) returns (stream SubscribeMonitorObjectChangeResponse) {
+  }
+
+  // 处理布控结果，将其设置为认可或者不认可
+  rpc ProcessMonitorResult(ProcessMonitorResultRequest) returns (ProcessMonitorResultResponse) {
+  }
+
+ }
+

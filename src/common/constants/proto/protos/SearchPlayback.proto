@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+import "common.proto";
+import "PreprocessDataSvc.proto";
+import "monitor.proto";
+import "search.proto";
+
+package zhst;
+
+message SearchPlaybackClueExtendInfo {
+  PreprocessDataSvc.PreprocessDataItem process_item = 1; //预处理结果
+  Monitor.MonitorResult suspect_item = 2;                //布控结果
+  search.SearchResult search_result = 3;                 //检索结果
+}
+
+message SearchPlaybackClue {
+  string cover_url = 1;                                  //持久保存的图片路径
+  SearchPlaybackClueExtendInfo extend_info = 2;          //扩展信息
+}
+
+message SearchPlaybackExtendInfo {
+  repeated uint64 camera_ids = 1;                     //摄像头列表
+  repeated SearchPlaybackClue clues = 2;              //目标线索
+  search.SearchRequest searchRequest = 3;             //保存的检索请求
+}
+
+message SearchPlayback {
+  uint64 id = 1;                                      //id
+  uint64 created_at = 2;                              //创建时间
+  uint64 updated_at = 3;                              //更新时间
+  uint64 deleted_at = 4;                              //删除时间
+  string name = 5;                                    //名称
+  bytes raw_extend_info = 6;                          //原始扩展信息，pb数据，可以解出SearchPlaybackExtendInfo
+
+  SearchPlaybackExtendInfo extend_info = 99;          //扩展信息，客户端使用
+}
+
+message CreateSearchPlaybackRequest {
+  SearchPlayback search_playback = 1;
+}
+
+message CreateSearchPlaybackResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+  SearchPlayback search_playback = 3;
+}
+
+message DeleteSearchPlaybackRequest {
+  uint64 id = 1;
+}
+
+message DeleteSearchPlaybackResponse {
+  string request_id = 1;
+  Common.Error error = 2;
+}
+
+message ModifySearchPlaybackRequest{
+  SearchPlayback search_playback = 1;
+}
+
+message ModifySearchPlaybackResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  SearchPlayback search_playback = 3;
+}
+
+message DescribeSearchPlaybackRequest{
+  uint64 id = 1;
+}
+
+message DescribeSearchPlaybackResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  SearchPlayback search_playback = 3;
+}
+
+message ListSearchPlaybacksRequest{
+  uint32 max_results = 1;
+  string next_token = 2;
+}
+
+message ListSearchPlaybacksResponse{
+  string request_id = 1;
+  Common.Error error = 2;
+  repeated SearchPlayback search_playbacks = 3;
+  uint64 total_count = 4;
+  string next_token = 5;
+}
+
+service SearchPlaybackService {
+  rpc CreateSearchPlayback(CreateSearchPlaybackRequest) returns (CreateSearchPlaybackResponse){
+  }
+
+  rpc DeleteSearchPlayback(DeleteSearchPlaybackRequest) returns (DeleteSearchPlaybackResponse){
+  }
+
+  rpc ModifySearchPlayback(ModifySearchPlaybackRequest) returns (ModifySearchPlaybackResponse){
+  }
+
+  rpc DescribeSearchPlayback(DescribeSearchPlaybackRequest) returns (DescribeSearchPlaybackResponse){
+  }
+
+  rpc ListSearchPlaybacks(ListSearchPlaybacksRequest) returns (ListSearchPlaybacksResponse){
+  }
+}

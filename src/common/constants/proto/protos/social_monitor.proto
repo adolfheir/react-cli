@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+import public "common.proto";
+
+package SocialMonitor;
+
+message XYZPoint{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message PYRPoint{
+    float pitch = 1;
+    float yaw = 2;
+    float roll = 3;
+}
+
+// 摄像头点位保存-摄像头的点位
+message CameraPoint{
+    uint64 camera_id = 1;
+    string camera_address = 2;
+    XYZPoint monitorLocation = 3;
+    XYZPoint monitorRotation = 4;
+    XYZPoint cameraLocation = 5;
+    PYRPoint cameraRotation = 6;
+    uint64 fovAngle = 7;
+    XYZPoint projectionLocation = 8;
+    PYRPoint projectionRotation = 9;
+}
+
+// 轨迹中的一个目标
+message ClueTrailItem{
+    uint64 camera_id = 1;                 // 原始目标所在摄像头的id
+    string path_id = 2;                   // 原始目标的id
+    bytes features = 3;                   // feature
+}
+
+// 嫌疑人轨迹
+message ClueTrail{
+    string clue_id = 1;                    // 嫌疑人uuid
+    string clue_name = 2;                  // 嫌疑人的名字
+    repeated ClueTrailItem paths = 3;     // 轨迹中的摘要信息
+    string trail_uuid = 4;                 // 轨迹的uuid  
+}
+
+// 1摄像头点位保存
+message PutCameraPointRequest{
+    repeated CameraPoint points = 1;
+}
+
+// 1摄像头点位保存
+message PutCameraPointResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+}
+
+// 2.嫌疑人轨迹保存
+message PutClueTrailRequest{
+    repeated ClueTrail trails = 1;
+}
+
+// 2.嫌疑人轨迹保存
+message PutClueTrailResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+}
+
+// 3摄像头点位 查询
+message GetCameraPointRequest{
+    repeated uint64 camera_ids = 1;
+}
+
+// 3摄像头点位 查询
+message GetCameraPointResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated CameraPoint points = 3;
+}
+
+// 4.嫌疑人轨迹 查询
+message GetClueTrailRequest{
+    repeated string clue_names = 1;
+}
+
+// 4.嫌疑人轨迹 查询
+message GetClueTrailResponse{
+    string request_id = 1;
+    Common.Error error = 2;
+    repeated ClueTrail clues = 3;
+}
+
+service MonitorService {
+    // 上传点位
+    rpc PutCameraPoint(PutCameraPointRequest) returns (PutCameraPointResponse){
+    }
+
+    // 上传轨迹
+    rpc PutClueTrail(PutClueTrailRequest) returns (PutClueTrailResponse){
+    }
+
+    // 查询点位
+    rpc GetCameraPoint(GetCameraPointRequest) returns (GetCameraPointResponse){
+    }
+
+    // 查询轨迹
+    rpc GetClueTrail(GetClueTrailRequest) returns (GetClueTrailResponse){
+    }
+}
+

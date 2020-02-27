@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package search;
+
+message FeatureInfo{
+  string group_id = 1;		// 特征id所在的group id
+  uint64 feature_id = 2;
+}
+// 特征信息、特征数据和图片数据只须填一个，择取条件的优化级为：特征信息 > 特征数据 > 图像数据
+message SearchCondition {
+  FeatureInfo feature_info = 1;  // 特征信息
+  bytes feature_data = 2; // 特征的二进制数据， 
+  bytes image_data = 3;   // 图片的二进制数据
+}
+
+message SearchRequest {
+  repeated string group_ids = 1;  // 待检索的特征组, 不填则从所有特征中检索
+  uint32 topn = 2;                // 候选结果个数， 默认10个
+  repeated SearchCondition conditions = 3; //图片和特征必须填一个
+  float threshold = 4;            // 阈值， 0-1的小数
+  uint32 begin_time = 5;          // 开始时间, 秒                 
+  uint32 end_time = 6;            // 结束时间，秒
+  bool query_extinfo = 7;		  // 检索结果是否需要查询扩展信息
+}
+
+// 检索结果扩展信息
+message ResultExtendedInfo {
+  uint64 frame_timestamp = 1;					// 图像帧的时间戳
+  Common.Rect2F object_detection_rect = 2;		// 目标检出的区域
+  Common.Rect2F expansion_od_rect = 3;			// 展示出目标的区域
+  string image_key = 4;							// 检出图像的存储位置信息
+  Common.ObjectType object_type = 5;			// 检出目标类型
+  float confidence = 6; 						// 置信度
+  Common.FrameExtendInfo frame_extend_info = 7; // 图像帧扩展信息
+  Common.PedAttrubutes ped_attributes = 8; 		// 行人属性
+}
+
+message SearchResult {
+  string group_id = 1; 				// 所在的组ID
+  uint64 object_id = 2;       		// 目标ID
+  uint64 feature_id = 3; 			// 特征ID
+  float score = 4;
+  uint32 condition_index = 5; 		// 结果匹配到的condition数据下标
+  ResultExtendedInfo extened_info = 6;  // 检索结果扩展信息，根据请求的query_extinfo字段是否需要填充
+}
+
+message SearchResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+  repeated SearchResult results = 3; // 检索结果
+}
+
+message CacheSearchingTargetRequest {
+  repeated FeatureInfo feature_info = 1;  // 特征信息
+}
+
+message CacheSearchingTargetResponse {
+  string request_id = 1;   // 必填字段，后台生成，每次请求全局唯一，用来定位问题
+  Common.Error error = 2;  // 错误信息
+}
+
+service SearchService {
+  // 检索接口
+  rpc Search(SearchRequest) returns (SearchResponse){
+  }
+  
+  // 缓存检索目标接口
+  rpc CacheSearchingTarget(CacheSearchingTargetRequest) returns (CacheSearchingTargetResponse){
+  }
+}

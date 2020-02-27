@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package PreprocessDataSvc;
+
+message PreprocessDataItem{
+	string object_id = 1; 						// 摘要id
+	uint64 timestamp = 2; 						// 图像帧时间戳(毫秒)
+	Common.ObjectType object_type = 3;
+	string image_key = 4;
+	float confidence = 5;
+    Common.Rect2F object_detection_rect = 6; 	//od结果的区域
+	Common.Rect2F expansion_od_rect = 7;    	//展示od结果的区域
+	Common.FrameExtendInfo frame_info = 8;			//图像帧信息
+	uint64 feature_id = 9;
+}
+
+message SubscribePreprocessDataRequest {
+    string preprocess_id = 1;
+}
+
+message SubscribePreprocessDataResponse {
+	string request_id = 1;
+  	Common.Error error = 2;
+    string preprocess_id = 3; 				// 预处理任务的id	
+	repeated PreprocessDataItem item = 4;
+}
+
+message ListPreprocessDataRequest {
+    string preprocess_id = 1;
+	uint64 start_timestamp = 2;
+	uint64 end_timestamp = 3;
+	Common.ObjectType object_type = 4;
+	uint32 max_results = 5;
+	string next_token = 6;
+}
+
+message ListPreprocessDataResponse {
+	string request_id = 1;
+  	Common.Error error = 2;
+	repeated PreprocessDataItem item = 3;
+	string next_token = 4;
+	uint32 total_count = 5;
+}
+
+service PreprocessDataService {
+	// 预处理摘要订阅 
+	rpc SubscribePreprocessData(SubscribePreprocessDataRequest) returns (stream SubscribePreprocessDataResponse){}
+	
+	// 预处理历史摘要查询
+	rpc ListPreprocessData(ListPreprocessDataRequest) returns (ListPreprocessDataResponse) {}
+}

@@ -4,6 +4,8 @@ const { exec } = require('child_process');
 
 var inputDir = path.join(__dirname, '../public/proto');
 var outputDir = path.join(__dirname, '../src/common/constants/proto');
+var outputProtoDir = path.join(__dirname, '../src/common/constants/proto/protos');
+var outputProtoJsDir = path.join(__dirname, '../src/common/constants/proto/js');
 
 const deleteFile = (delPath) => {
     try {
@@ -13,6 +15,29 @@ const deleteFile = (delPath) => {
     }
 };
 
+const getProtoFile = (dirPath) => {
+    let prrotoFiles = [];
+    function findProtoFile(dirPath) {
+        let files = fs.readdirSync(dirPath);
+        files.forEach(function(item, index) {
+            let fPath = path.join(dirPath, item);
+            let stat = fs.statSync(fPath);
+            if (stat.isDirectory() === true) {
+                findProtoFile(fPath);
+            }
+            if (stat.isFile() === true && fPath.includes('.proto')) {
+                fs.copyFile(fPath, path.join(outputProtoDir, item), function(err) {
+                    if (err) {
+                        console.log('copy err', err);
+                    }
+                });
+            }
+        });
+    }
+    findProtoFile(dirPath);
+    return prrotoFiles;
+};
+
 const doExec = (command, extraEnv) => {
     return exec(command, {
         stdio: 'inherit',
@@ -20,23 +45,28 @@ const doExec = (command, extraEnv) => {
     });
 };
 
-const clean = () => {
-    const buildFileList = fs.readdirSync(outputDir);
+const clean = (dir) => {
+    const buildFileList = fs.readdirSync(dir);
     buildFileList.map((fileName) => {
-        deleteFile(path.join(outputDir, fileName));
+        deleteFile(path.join(dir, fileName));
     });
 };
 
 console.log(`\nBuilding proto start ...`);
 
-clean();
+clean(outputProtoDir);
+clean(outputProtoJsDir);
 
-const propoList = fs.readdirSync(inputDir).filter((v) => v.includes('.proto'));
+getProtoFile(inputDir).map((fPath) => {
+    copy(fPath);
+});
+
+const propoList = fs.readdirSync(outputProtoDir);
 
 propoList.forEach((fileName) => {
     console.log(`\nBuilding ${fileName}`);
     doExec(
-        `protoc -I=${inputDir} ${fileName} --js_out=import_style=commonjs:${outputDir} --grpc-web_out=import_style=commonjs,mode=grpcwebtext:${outputDir}`
+        `protoc -I=${outputProtoDir} ${fileName} --js_out=import_style=commonjs:${outputProtoJsDir} --grpc-web_out=import_style=commonjs,mode=grpcwebtext:${outputProtoJsDir}`
     );
 });
 
