@@ -1,0 +1,11 @@
+.ring {
+    width: 200px;
+    height: 200px;
+    &__controll {
+        stroke-dasharray: 252.2px, 252.2px;
+        stroke-dashoffset: 22px;
+        transition: stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease 0s;
+        transform: rotateZ(90deg);
+        transform-origin: 50% 50%;
+    }
+}

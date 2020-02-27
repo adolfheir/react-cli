@@ -1,0 +1,127 @@
+.snop-list {
+    display: flex;
+    height: 100%;
+}
+
+.left-panel {
+    &__preset-date {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        & > span {
+            font-size: 12px;
+        }
+        :global {
+            & .next-radio-wrapper:last-child .next-radio-label {
+                margin-right: 0px;
+            }
+        }
+    }
+    &__date-picker {
+        position: relative;
+        width: 100%;
+        padding-top: 8px;
+        padding-bottom: 12px;
+        & > div {
+            position: relative;
+            width: 100%;
+        }
+    }
+    &__select-control {
+        display: flex;
+        height: 40px;
+        width: 100%;
+        align-items: center;
+    }
+}
+
+.content-panel {
+    margin-left: 20px;
+    flex: 1;
+    &__header {
+        display: flex;
+        margin-top: -12px;
+        padding: 18px 0;
+        align-items: center;
+        justify-content: space-between;
+        & > p {
+            margin: 0px;
+            flex: 1;
+            font-size: 14px;
+            font-family: MicrosoftYaHei-Bold;
+        }
+    }
+    &__detail-control {
+        display: flex;
+        font-size: 12px;
+        font-weight: 400;
+        align-items: center;
+        > div {
+            margin-left: 8px;
+        }
+    }
+    &__content {
+        display: flex;
+        height: calc(100vh - 58px - 60px); //这里有点问题 高度写死
+        margin: 0 -12px;
+        > div:first-child {
+            flex: 1;
+        }
+    }
+    &__photo-list {
+        display: flex;
+        height: 100%;
+        overflow-y: auto;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    &__photo-item {
+        margin: 10px;
+        width: 120px;
+        > img {
+            box-sizing: content-box;
+            width: 100%;
+            height: 160px;
+            border: 1px solid #000;
+        }
+        > span {
+            display: block;
+            text-align: center;
+        }
+        // &:last-child {
+        //     margin-right: auto;
+        // }
+    }
+    &__detail {
+        // margin: -12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    &__detail-title {
+        margin-bottom: 12px;
+        &:not(:first-child) {
+            margin-top: 20px;
+        }
+    }
+    &__detail-info {
+        margin-left: 12px;
+        & > p > span {
+            display: inline-block;
+            width: 60px;
+        }
+    }
+    &__detail-snop {
+        display: flex;
+        justify-content: space-between;
+        & > img {
+            width: 130px;
+            height: 176px;
+        }
+    }
+    &__detail-pre {
+        & > img {
+            width: 100%;
+            height: 168px;
+        }
+    }
+}

@@ -1,0 +1,61 @@
+.contact {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 20px;
+    &__content {
+        margin-top: 12px;
+        width: 100%;
+        height: calc(100% - 28px - 12px); //100% - 按钮高度  - 自身margin
+    }
+    &__list {
+        display: flex;
+        margin: -12px -2px;
+    }
+    &__item {
+        box-sizing: border-box;
+        padding: 10px;
+        width: 25%;
+        > div {
+            border: 1px solid rgba(230, 230, 230, 1);
+        }
+    }
+    &__header {
+        box-sizing: border-box;
+        display: flex;
+        height: 50px;
+        padding: 0 20px;
+        align-items: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    &__info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__process {
+        height: 150px;
+        text-align: center;
+    }
+    &__ring {
+        height: 80px;
+        width: 80px;
+        margin: 0 auto;
+        margin-bottom: 18px;
+        margin-top: 20px;
+    }
+    &__state {
+        width: 117px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        font-size: 12px;
+        border: 1px solid rgba(0, 153, 255, 0.5019607843137255);
+        border-radius: 110px;
+        &--success {
+            color: #0099ff;
+            background: rgba(0, 153, 255, 0.1);
+        }
+    }
+}
