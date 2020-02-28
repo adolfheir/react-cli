@@ -3,8 +3,8 @@ import style from './index.scss';
 
 const NotFound: React.FC = () => {
     return (
-        <div className="container">
-            <p className={style['not-found']}>404</p>
+        <div className={style['not-found']}>
+            <p>404</p>
         </div>
     );
 };

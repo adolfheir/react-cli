@@ -102,6 +102,9 @@
         &:not(:first-child) {
             margin-top: 20px;
         }
+        :first-child {
+            margin-top: 12px;
+        }
     }
     &__detail-info {
         margin-left: 12px;

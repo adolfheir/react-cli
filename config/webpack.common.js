@@ -45,7 +45,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentName: '[name]__[local]--[hash:base64:5]',
+                                localIdentName: '[local]--[hash:base64:5]',
                             },
                         },
                     },
@@ -82,9 +82,13 @@ module.exports = {
                 from: path.join(__dirname, '../public/index.html'),
                 to: path.join(__dirname, '../build/index.html'),
             },
+            // {
+            //     from: path.join(__dirname, '../public/mapbox'),
+            //     to: path.join(__dirname, '../build/mapbox'),
+            // },
             {
-                from: path.join(__dirname, '../public/mapbox'),
-                to: path.join(__dirname, '../build/mapbox'),
+                from: path.join(__dirname, '../public/mapfiles'),
+                to: path.join(__dirname, '../build/mapfiles'),
             },
         ]),
     ],
@@ -100,5 +104,7 @@ module.exports = {
             '@stores': path.join(__dirname, '../src/stores'),
         },
     },
-    externals: {},
+    externals: {
+        google: 'google',
+    },
 };

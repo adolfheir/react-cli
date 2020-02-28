@@ -1,5 +1,12 @@
 .not-found {
-  font-size: 60px;
-  font-weight: 100;
-  color: #999;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    > p {
+        color: #999;
+        font-size: 60px;
+        font-weight: 100;
+        margin: 0px;
+    }
 }
