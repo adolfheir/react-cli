@@ -1,5 +1,5 @@
 import React, { CSSProperties, ReactNode } from 'react';
-import { chunk, debounce } from 'Lodash';
+import { chunk, debounce } from 'lodash';
 import classNames from 'classnames';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
