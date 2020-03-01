@@ -15,5 +15,11 @@ module.exports = {
                 parser: 'css',
             },
         },
+        {
+            files: '*.html',
+            options: {
+                parser: 'html',
+            },
+        },
     ],
 };

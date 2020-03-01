@@ -35,8 +35,11 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 0,
         '@typescript-eslint/no-explicit-any': 0,
         '@typescript-eslint/triple-slash-reference': ['error', { path: 'always', types: 'never', lib: 'never' }],
+        //已下是自己加的
+        '@typescript-eslint/no-empty-function': 0,
+        '@typescript-eslint/explicit-function-return-type':0,
         // React相关校验规则
-        'react/prop-types':0,
+        'react/prop-types': 0,
         'react/jsx-indent': [2, 4],
         'react/jsx-no-undef': [2, { allowGlobals: true }],
         'jsx-control-statements/jsx-use-if-tag': 0,

@@ -26,7 +26,7 @@ export default class RightPanel extends React.Component<IProps, IState> {
                             {isString(header) ? (
                                 <div className={classNames(styles[`${componentName}__title`])}>{header}</div>
                             ) : (
-                                { header }
+                                header
                             )}
                         </div>
                         <Line />

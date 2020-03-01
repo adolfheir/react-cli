@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
-import { Switch, Tab, Icon } from '@alifd/next';
+import { Switch, DatePicker } from '@alifd/next';
 import Panel from '@common/components/Panel';
-import Line from '@common/components/Line';
+import LazyList from '@common/components/LazyList';
+import DetailPanel from './DetailPanel';
 
 import styles from './index.scss';
 
+const { RangePicker } = DatePicker;
+
 const _list = [];
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
     _list.push({ key: i, photo: 'https://dwz.cn/jkDtvsC2', time: new Date() });
 }
 
@@ -17,83 +20,77 @@ const componentName = 'content-panel';
 export default class ContentPanel extends React.Component {
     state = {
         showDetail: true,
-        list: _list,
+        //列表状态
+        hasNextPage: true,
+        isNextPageLoading: false,
+        items: _list,
+    };
+
+    handleLoadNextPage = (...args) => {
+        this.setState({ isNextPageLoading: true }, () => {
+            setTimeout(() => {
+                this.setState((state) => ({
+                    hasNextPage: state.items.length < 10000,
+                    isNextPageLoading: false,
+                    items: [...state.items].concat(_list),
+                }));
+            }, 250);
+        });
+    };
+
+    renderHeader = () => {
+        const { showDetail } = this.state;
+        return (
+            <div className={classNames(styles[`${componentName}__header`])}>
+                <p>{'全部抓拍（114，147）'}</p>
+                <div className={classNames(styles[`${componentName}__detail-control`])}>
+                    <span>抓拍时间:&nbsp;&nbsp;</span>
+                    <RangePicker
+                        defaultValue={[moment('2017-11-20', 'YYYY-MM-DD'), moment('2017-12-15', 'YYYY-MM-DD')]}
+                        onChange={() => {}}
+                    />
+                    <span>详情&nbsp;&nbsp;</span>
+                    <Switch
+                        checked={showDetail}
+                        onChange={() => {
+                            this.setState({ showDetail: !showDetail }, () => {
+                                this.__HACK__RESIZE__();
+                            });
+                        }}
+                        size="small"
+                    />
+                </div>
+            </div>
+        );
+    };
+    renderItem = ({ key, photo, time }) => {
+        return (
+            <div key={key} className={classNames(styles[`${componentName}__photo-item`])}>
+                <img src={photo} />
+                <span>{moment(time).format('YYYY-MM-DD H:mm:ss')}</span>
+            </div>
+        );
     };
     render() {
-        const { showDetail, list } = this.state;
+        const { showDetail, items, hasNextPage, isNextPageLoading } = this.state;
         return (
-            <Panel className={classNames(styles[`${componentName}`])}>
-                <div className={classNames(styles[`${componentName}__header`])}>
-                    <p>{'全部抓拍（114，147）'}</p>
-                    <div className={classNames(styles[`${componentName}__detail-control`])}>
-                        详情
-                        <Switch
-                            checked={showDetail}
-                            onChange={() => {
-                                this.setState({ showDetail: !showDetail });
-                            }}
-                            size="small"
-                        />
-                    </div>
-                </div>
-                <Line style={{ position: 'absolute', margin: '0 -12px' }} />
+            <Panel header={this.renderHeader()} className={classNames(styles[`${componentName}`])}>
                 <div className={classNames(styles[`${componentName}__content`])}>
                     <div className={classNames(styles[`${componentName}__photo-list`])}>
-                        {list.map(({ key, photo, time }) => (
-                            <div key={key} className={classNames(styles[`${componentName}__photo-item`])}>
-                                <img src={photo} />
-                                <span>{moment(time).format('YYYY-MM-DD H:mm:ss')}</span>
-                            </div>
-                        ))}
+                        <LazyList
+                            items={items}
+                            hasNextPage={hasNextPage}
+                            isNextPageLoading={isNextPageLoading}
+                            itemRender={this.renderItem}
+                            onLoadNextPage={this.handleLoadNextPage}
+                            columnWidth={140}
+                            rowHeight={200}
+                            __HACK__RESIZE__={(handleResize) => {
+                                this.__HACK__RESIZE__ = handleResize;
+                            }}
+                        />
                     </div>
-                    {showDetail && (
-                        <Panel style={{ height: '100%' }}>
-                            <div className={classNames(styles[`${componentName}__detail`])}>
-                                <Tab defaultActiveKey="1">
-                                    <Tab.Item title="详细信息" key="1">
-                                        <div className={classNames(styles[`${componentName}__detail-title`])}>
-                                            <Icon type="arrow-down" size="xxs" />
-                                            基础信息
-                                            <Line />
-                                        </div>
-                                        <div className={classNames(styles[`${componentName}__detail-info`])}>
-                                            <p>
-                                                <span>性别</span>——
-                                            </p>
-                                            <p>
-                                                <span>年龄段</span>——
-                                            </p>
-                                            <p>
-                                                <span>戴眼镜</span>——
-                                            </p>
-                                            <p>
-                                                <span>抓拍地点</span>——
-                                            </p>
-                                        </div>
-
-                                        <div className={classNames(styles[`${componentName}__detail-title`])}>
-                                            <Icon type="arrow-down" size="xxs" />
-                                            抓拍照
-                                            <Line />
-                                        </div>
-                                        <div className={classNames(styles[`${componentName}__detail-snop`])}>
-                                            <img src="https://dwz.cn/jkDtvsC2" />
-                                            <img src="https://dwz.cn/jkDtvsC2" />
-                                        </div>
-
-                                        <div className={classNames(styles[`${componentName}__detail-title`])}>
-                                            <Icon type="arrow-down" size="xxs" />
-                                            场景图预览
-                                            <Line />
-                                        </div>
-                                        <div className={classNames(styles[`${componentName}__detail-pre`])}>
-                                            <img src="https://dwz.cn/jkDtvsC2" />
-                                        </div>
-                                    </Tab.Item>
-                                </Tab>
-                            </div>
-                        </Panel>
-                    )}
+                    {showDetail && <DetailPanel />}
                 </div>
             </Panel>
         );

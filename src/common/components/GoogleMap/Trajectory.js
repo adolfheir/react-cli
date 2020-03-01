@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { isEqual } from 'lodash';
 import DashLine from './DashLine';
+import google from 'google';
 import { Polyline, OverlayView } from 'react-google-maps';
 import { latLng2Point, getDistance } from '@components/GoogleMap/utils';
 
@@ -76,11 +77,8 @@ export default class Trajectory extends Component {
                 this.polyLineRef.current.state.__SECRET_POLYLINE_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.setOptions(
                     optionAdapter(offset)
                 );
-                console.log('opy', optionAdapter(offset));
                 offset >= 100 ? this.cleartAnimal() : (offset += getPercent());
-            } catch (error) {
-                console.log('err', error);
-            }
+            } catch (error) {}
         }, 16);
     };
 
@@ -92,9 +90,7 @@ export default class Trajectory extends Component {
                 this.polyLineRef.current.state.__SECRET_POLYLINE_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.setOptions({
                     icons: [],
                 });
-            } catch (error) {
-                console.log('err', error);
-            }
+            } catch (error) {}
         }
     };
 

@@ -1,37 +1,39 @@
 .snop-list {
+    box-sizing: border-box;
+    padding: 20px;
+    padding-top: 0px;
     display: flex;
     height: 100%;
 }
 
 .left-panel {
-    &__preset-date {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        & > span {
-            font-size: 12px;
-        }
-        :global {
-            & .next-radio-wrapper:last-child .next-radio-label {
-                margin-right: 0px;
-            }
-        }
-    }
-    &__date-picker {
-        position: relative;
-        width: 100%;
-        padding-top: 8px;
-        padding-bottom: 12px;
-        & > div {
-            position: relative;
-            width: 100%;
-        }
-    }
     &__select-control {
         display: flex;
         height: 40px;
         width: 100%;
         align-items: center;
+    }
+    &__tree {
+        :global {
+            & .next-tree-switcher {
+                display: none;
+            }
+        }
+        :global {
+            & .next-tree-node .next-tree-node-inner:focus .next-tree-node-label {
+                color: #333333;
+                background-color: transparent;
+            }
+
+            & .next-tree-node-label-wrapper .next-tree-node-label:hover {
+                background-color: transparent;
+            }
+        }
+    }
+    &__map-container {
+        display: flex;
+        margin: -12px;
+        height: calc(100vh - 40px - 60px - 20px); //这里有点问题 高度写死
     }
 }
 
@@ -40,8 +42,8 @@
     flex: 1;
     &__header {
         display: flex;
-        margin-top: -12px;
-        padding: 18px 0;
+        padding: 0 20px;
+        width: 100%;
         align-items: center;
         justify-content: space-between;
         & > p {
@@ -56,28 +58,30 @@
         font-size: 12px;
         font-weight: 400;
         align-items: center;
-        > div {
-            margin-left: 8px;
+        > div:nth-of-type(1) {
+            margin-right: 20px;
         }
     }
     &__content {
         display: flex;
-        height: calc(100vh - 58px - 60px); //这里有点问题 高度写死
-        margin: 0 -12px;
-        > div:first-child {
-            flex: 1;
+        height: calc(100vh - 40px - 60px - 20px); //这里有点问题 高度写死
+        margin: -12px;
+        > div:not(:first-child) {
+            flex: none;
         }
     }
     &__photo-list {
         display: flex;
         height: 100%;
-        overflow-y: auto;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex: auto;
+        overflow-x: hidden;
+        // overflow-y: auto;
     }
     &__photo-item {
-        margin: 10px;
+        margin: 0 auto;
+        padding: 10px;
         width: 120px;
+        box-sizing: content-box;
         > img {
             box-sizing: content-box;
             width: 100%;
@@ -92,12 +96,18 @@
         //     margin-right: auto;
         // }
     }
-    &__detail {
-        // margin: -12px;
-        overflow-x: hidden;
+}
+
+.snop-detail {
+    margin: -12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    &__content {
+        padding: 12px;
+        height: calc(100vh - 40px - 60px - 20px - 40px); //这里有点问题 高度写死
         overflow-y: auto;
     }
-    &__detail-title {
+    &__title {
         margin-bottom: 12px;
         &:not(:first-child) {
             margin-top: 20px;
@@ -106,14 +116,14 @@
             margin-top: 12px;
         }
     }
-    &__detail-info {
+    &__info {
         margin-left: 12px;
         & > p > span {
             display: inline-block;
             width: 60px;
         }
     }
-    &__detail-snop {
+    &__snop {
         display: flex;
         justify-content: space-between;
         & > img {
@@ -121,7 +131,7 @@
             height: 176px;
         }
     }
-    &__detail-pre {
+    &__pre {
         & > img {
             width: 100%;
             height: 168px;

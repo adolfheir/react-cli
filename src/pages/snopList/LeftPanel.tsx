@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import classNames from 'classnames';
-import moment from 'moment';
-import { Radio, DatePicker, Icon } from '@alifd/next';
+import { Icon, Tree } from '@alifd/next';
+import Map from '@common/components/GoogleMap';
 import Panel from '@common/components/Panel';
-import Line from '@common/components/Line';
+const TreeNode = Tree.Node;
 
 import styles from './index.scss';
 
@@ -13,56 +13,121 @@ interface IProps {
 
 interface IState {
     dataSource: any;
-    value: number | null;
+    expandedKeys: Array<string>;
+    showDeviceTree: boolean;
 }
 
 const componentName = 'left-panel';
-const { Group: RadioGroup } = Radio;
-const { RangePicker } = DatePicker;
+
+const data = [
+    {
+        key: '0-0',
+        label: '0-0',
+        leval: 1,
+        children: [
+            {
+                key: '0-0-0',
+                label: '0-0-0',
+                leval: 2,
+                children: [
+                    {
+                        key: '0-0-0-0',
+                        label: '0-0-0-0',
+                        leval: 3,
+                    },
+                    {
+                        key: '0-0-0-1',
+                        label: '0-0-0-1',
+                        leval: 3,
+                    },
+                ],
+            },
+        ],
+    },
+];
 
 export default class LeftPanel extends React.Component<IProps, IState> {
     state = {
-        value: 1,
-        dataSource: [
-            {
-                value: 1,
-                label: '近1天',
-            },
-            {
-                value: 2,
-                label: '近3天',
-            },
-            {
-                value: 3,
-                label: '近7天',
-            },
-        ],
+        showDeviceTree: true,
+        expandedKeys: [],
+        dataSource: data,
+    };
+    rennderTreeNode = (item) => {
+        const { leval, key, label } = item;
+        const { expandedKeys } = this.state;
+        const isExpend = expandedKeys.includes(key);
+        return (
+            <div className={classNames(styles[`${componentName}__tree-node`])}>
+                <span
+                    onClick={() => {
+                        const { expandedKeys } = this.state;
+                        let _expandedKeys = [...expandedKeys];
+                        if (isExpend) {
+                            _expandedKeys = _expandedKeys.filter((v) => !v.includes(key));
+                        } else {
+                            _expandedKeys = _expandedKeys.concat(key);
+                        }
+                        console.log('expandedKeys', expandedKeys);
+                        this.setState({ expandedKeys: _expandedKeys });
+                    }}
+                    className={classNames(styles[`${componentName}__tree-node-switcher`])}>
+                    <Icon type={isExpend ? 'arrow-down' : 'arrow-right'} size="xxs" />
+                </span>
+                <span>{label}</span>
+            </div>
+        );
+    };
+
+    renderTree = () => {
+        const { dataSource, expandedKeys } = this.state;
+        const loop = (data) =>
+            data.map((item) => {
+                if (item.children) {
+                    return (
+                        <TreeNode key={item.key} label={this.rennderTreeNode(item)}>
+                            {loop(item.children)}
+                        </TreeNode>
+                    );
+                }
+                return <TreeNode key={item.key} label={this.rennderTreeNode(item)} />;
+            });
+
+        return (
+            <Tree
+                draggable
+                selectable={false}
+                expandedKeys={expandedKeys}
+                className={classNames(styles[`${componentName}__tree`])}>
+                {loop(dataSource)}
+            </Tree>
+        );
+    };
+    renderHeader = () => {
+        const { showDeviceTree } = this.state;
+        return (
+            <div className={classNames(styles[`${componentName}__select-control`])}>
+                <span>{'请选择卡口设备'}</span>
+                <Icon
+                    onClick={() => {
+                        this.setState({ showDeviceTree: !showDeviceTree });
+                    }}
+                    type={showDeviceTree ? 'arrow-down' : 'arrow-right'}
+                    size="xxs"
+                />
+            </div>
+        );
     };
     render() {
-        const { className } = this.props;
-        const { dataSource, value } = this.state;
+        const { showDeviceTree } = this.state;
         return (
             <Fragment>
-                <Panel className={classNames(styles[`${componentName}`])}>
-                    <div className={classNames(styles[`${componentName}__preset-date`])}>
-                        <span>抓拍时间:</span>
-                        <span>
-                            <RadioGroup dataSource={dataSource} value={value} onChange={() => {}} />
-                        </span>
-                    </div>
-                    <div className={classNames(styles[`${componentName}__date-picker`])}>
-                        <RangePicker
-                            defaultValue={[moment('2017-11-20', 'YYYY-MM-DD'), moment('2017-12-15', 'YYYY-MM-DD')]}
-                            onChange={() => {}}
-                        />
-                    </div>
-                    <Line style={{ position: 'absolute', margin: '0 -12px' }} />
-                    <div className={classNames(styles[`${componentName}__select-control`])}>
-                        <span>{'请选择卡口设备'}</span>
-                        <Icon type="arrow-down" size="xxs" />
-                    </div>
-                    {/* {<Map />} */}
-                    
+                <Panel header={this.renderHeader()} className={classNames(styles[`${componentName}`])}>
+                    {showDeviceTree && this.renderTree()}
+                    {!showDeviceTree && (
+                        <div className={classNames(styles[`${componentName}__map-container`])}>
+                            <Map></Map>
+                        </div>
+                    )}
                 </Panel>
             </Fragment>
         );

@@ -78,7 +78,7 @@ export const isPointOnLine = (vectorA, path) => {
     const [vectorB, vectorC] = path;
 
     //与端点重合
-    if ((vectorA.x == vectorB.x && vectorA.y == vectorB.y) || (vectorA.x == vectorC.x && vectorA.y == vectorC.y)) {
+    if ((vectorA.x === vectorB.x && vectorA.y === vectorB.y) || (vectorA.x === vectorC.x && vectorA.y === vectorC.y)) {
         return true;
     }
 
@@ -149,7 +149,7 @@ export const getLineCoincide = (path1, path2) => {
         paths = [[vectorA, vectorB]];
     }
     //未匹配到上述情况,则没有重合 原样返回
-    if (paths.length == 0) {
+    if (paths.length === 0) {
         paths = [path1, path2];
     }
     return paths;
