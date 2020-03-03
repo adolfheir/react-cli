@@ -11,6 +11,7 @@ import styles from './index.scss';
 interface IProps {
     className?: string;
     style?: CSSProperties;
+    onStyleLoad?: any;
     children?: JSX.Element | JSX.Element[] | Array<JSX.Element | undefined>;
 }
 
@@ -25,12 +26,19 @@ const MapComponent = ReactMapboxGl({
 export default class Map extends Component<IProps, IState> {
     private static defaultProps = {};
 
-    private handleStyleLoad = (map) => {
+    private handleStyleLoad = (...arg) => {
+        const [map] = arg;
+        mapCore.ins = map;
+        
+        const { onStyleLoad } = this.props;
+        if (onStyleLoad) {
+            onStyleLoad(...arg);
+        }
+
         // @ts-ignore
         window.mapboxgl = mapboxgl;
         // @ts-ignore
         window.__Map__ = map;
-        mapCore.ins = map;
     };
     public render() {
         const { style, className, children, ...others } = this.props;
@@ -40,9 +48,9 @@ export default class Map extends Component<IProps, IState> {
                 className={classNames(styles[`${componentName}`], className)}
                 containerStyle={style}
                 zoom={[12]}
-                onStyleLoad={this.handleStyleLoad}
                 center={[120.5, 30]}
-                {...others}>
+                {...others}
+                onStyleLoad={this.handleStyleLoad}>
                 {children}
             </MapComponent>
         );
